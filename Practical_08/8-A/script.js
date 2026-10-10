@@ -1,36 +1,30 @@
 
-interface Task {
-    id: number;
-    title: string;
-    done: boolean;
-}
+let tasks = [];
 
-let tasks: Task[] = [];
+const input = document.getElementById("task");
+const list = document.getElementById("list");
 
-const input = document.getElementById("task") as HTMLInputElement;
-const list = document.getElementById("list") as HTMLUListElement;
-
-document.getElementById("add")!.addEventListener("click", (): void => {
+document.getElementById("add").onclick = () => {
     if (!input.value.trim()) return;
 
-    tasks.push({ id: Date.now(), title: input.value, done: false });
+    tasks.push({ title: input.value, done: false });
     input.value = "";
     showTasks();
-});
+};
 
-function showTasks(): void {
+function showTasks() {
     list.innerHTML = "";
 
-    tasks.forEach((task: Task) => {
+    tasks.forEach((task, i) => {
         const li = document.createElement("li");
-        li.textContent = task.title + " ❌";
+        li.textContent = task.title + (task.done ? " ✓" : "");
         li.className = task.done ? "done" : "";
 
         li.onclick = () => {
-            if (li.textContent?.endsWith("❌")) {
-                const deleteTask = confirm("OK = Complete, Cancel = Delete");
-                if (deleteTask) task.done = !task.done;
-                else tasks = tasks.filter(t => t.id !== task.id);
+            if (confirm("OK = Complete, Cancel = Delete")) {
+                task.done = !task.done;
+            } else {
+                tasks.splice(i, 1);
             }
             showTasks();
         };
